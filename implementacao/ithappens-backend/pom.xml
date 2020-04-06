@@ -49,6 +49,7 @@
     </dependencies>
 
     <build>
+        <finalName>ithappens</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
