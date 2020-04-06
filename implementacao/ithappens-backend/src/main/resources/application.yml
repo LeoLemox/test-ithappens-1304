@@ -3,3 +3,17 @@ spring:
     url: jdbc:postgresql://postgres:5432/db-ithappens
     username: postgres
     password: postgres
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        enable_lazy_load_no_trans: true
+
+  flyway:
+    validate-on-migrate: false
+    baseline-on-migrate: true
+    baseline-version: 0
