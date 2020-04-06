@@ -1,0 +1,11 @@
+./implementacao/ithappens-backend/HELP.md
+./implementacao/ithappens-backend/target/
+!./implementacao/ithappens-backend/.mvn/wrapper/maven-wrapper.jar
+!./implementacao/ithappens-backend/**/src/main/**
+!./implementacao/ithappens-backend/**/src/test/**
+
+### IntelliJ IDEA ###
+./implementacao/ithappens-backend/.idea
+./implementacao/ithappens-backend/*.iws
+./implementacao/ithappens-backend/*.iml
+./implementacao/ithappens-backend/*.ipr
