@@ -1,11 +1,5 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://postgres:5432/db-ithappens
-    username: postgres
-    password: postgres
-
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: validate
     properties:
@@ -17,3 +11,31 @@ spring:
     validate-on-migrate: false
     baseline-on-migrate: true
     baseline-version: 0
+
+  profiles:
+    active: dev
+
+---
+
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dbithappens
+    username: postgres
+    password: root
+
+  jpa:
+    show-sql: true
+
+---
+
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:postgresql://postgres:5432/db-ithappens
+    username: postgres
+    password: postgres
+
+  jpa:
+    show-sql: false
+
