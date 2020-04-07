@@ -34,6 +34,7 @@ create table if not exists public.it04_produto
     it04_cod_produto   bigint       not null default nextval('public.it04_produto_seq'::regclass),
     it04_descricao     varchar(255) not null,
     it04_codigo_barras varchar(13)  not null,
+    it04_valor         numeric               default 0.0,
 
     constraint pkit04_cod_produto primary key (it04_cod_produto)
 );
