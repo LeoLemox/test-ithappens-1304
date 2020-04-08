@@ -29,10 +29,7 @@ public class UsuarioServiceTest {
 
     @BeforeEach
     void init() {
-        usuario = new Usuario();
-        usuario.setNome("José da Silva");
-        usuario.setEmail("jose.silva@ithappens.com");
-        usuario.setSenha("jose@123");
+        usuario = Usuario.builder().id(6L).nome("José da Silva").email("jose.silva@ithappens.com").senha("jose@123").build();
     }
 
     @Test
@@ -42,9 +39,8 @@ public class UsuarioServiceTest {
 
         Usuario novoUsuario = usuarioService.salvar(usuario);
 
+        assertEquals(usuario.getId(), novoUsuario.getId());
         assertEquals(usuario.getNome(), novoUsuario.getNome());
-        assertEquals(usuario.getEmail(), novoUsuario.getEmail());
-        assertEquals(usuario.getSenha(), novoUsuario.getSenha());
     }
 
     @Test

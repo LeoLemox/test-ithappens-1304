@@ -2,6 +2,7 @@ package br.com.ithappens.ithappensbackend.controller;
 
 import br.com.ithappens.ithappensbackend.model.Usuario;
 import br.com.ithappens.ithappensbackend.repository.UsuarioRepository;
+import br.com.ithappens.ithappensbackend.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +23,9 @@ import static java.util.Arrays.asList;
 import static org.mockito.Mockito.when;
 import static org.springframework.data.domain.Sort.Order.asc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UsuarioController.class)
 public class UsuarioControllerTest {
@@ -35,16 +36,19 @@ public class UsuarioControllerTest {
     @MockBean
     private UsuarioRepository repository;
 
-    private ObjectMapper objectMapper;
+    @MockBean
+    private UsuarioService service;
+
+    private ObjectMapper mapper;
+
     private Usuario usuario;
     private List<Usuario> usuarios;
 
     @BeforeEach
     void init() {
-        objectMapper = new ObjectMapper();
 
+        mapper = new ObjectMapper();
         usuario = Usuario.builder().id(1L).nome("Leonardo").email("leonardo@ithappens.com").senha("leonardo@123").build();
-
         usuarios = asList(
                 usuario,
                 Usuario.builder().id(2L).nome("Donatello").email("donatello@ithappens.com").senha("donatello@123").build(),
@@ -62,8 +66,8 @@ public class UsuarioControllerTest {
                         .collect(Collectors.toList())
         );
 
-        mockMvc.perform(get("/usuario").accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        mockMvc.perform(get("/usuario")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -72,8 +76,8 @@ public class UsuarioControllerTest {
 
         when(repository.findAll(Sort.by(asc("nome")))).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/usuario").accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        mockMvc.perform(get("/usuario")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
@@ -82,19 +86,37 @@ public class UsuarioControllerTest {
 
         when(repository.findById(1L)).thenReturn(Optional.of(usuario));
 
-        mockMvc.perform(get("/usuario/1").accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        mockMvc.perform(get("/usuario/1")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(usuario)));
+                .andExpect(content().json(mapper.writeValueAsString(usuario)));
     }
 
     @Test
-    void deveRetornarStatus404AoNaoEncontrarOUsuarioComIdCorrespondente() throws Exception {
+    void deveRetornarStatus204AoNaoEncontrarOUsuarioComIdCorrespondente() throws Exception {
 
         when(repository.findById(7L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/usuario/7").accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/usuario/7")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deveRetornarStatus201EUsuarioCriado() throws Exception {
+
+        Usuario novoUsuario = Usuario.builder().nome("José").email("jose@ithappens.com").senha("jose@123").build();
+        Usuario usuarioSalvo = Usuario.builder().id(6L).nome("José").email("jose@ithappens.com").senha("jose@123").build();
+
+        when(service.salvar(novoUsuario)).thenReturn(usuarioSalvo);
+
+        mockMvc.perform(post("/usuario")
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(novoUsuario)))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("Location", "http://localhost/usuario/6"))
+                .andExpect(status().isCreated());
     }
 }
