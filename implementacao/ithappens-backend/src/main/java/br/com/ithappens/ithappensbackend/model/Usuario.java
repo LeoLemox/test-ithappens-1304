@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
@@ -31,12 +32,15 @@ public class Usuario implements Serializable {
     @Column(name = "it01_cod_usuario")
     private Long id;
 
+    @NotBlank
     @Column(name = "it01_nome")
     private String nome;
 
+    @NotBlank
     @Column(name = "it01_email")
     private String email;
 
+    @NotBlank
     @Column(name = "it01_senha")
     private String senha;
 }

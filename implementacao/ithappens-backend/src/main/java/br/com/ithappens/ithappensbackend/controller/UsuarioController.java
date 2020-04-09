@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    private ResponseEntity<Usuario> novoUsuario(@RequestBody Usuario usuario) {
+    private ResponseEntity<Usuario> novoUsuario(@Valid @RequestBody Usuario usuario) {
         Usuario novoUsuario = usuarioService.salvar(usuario);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novoUsuario.getId()).toUri();
         return created(location).body(novoUsuario);
