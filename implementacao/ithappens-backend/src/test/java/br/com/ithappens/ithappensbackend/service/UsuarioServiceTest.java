@@ -50,4 +50,12 @@ public class UsuarioServiceTest {
 
         assertThrows(ServiceException.class, () -> usuarioService.salvar(usuario));
     }
+
+    @Test
+    void aoVerificarUsuarioInexistenteLancarExcecao() {
+
+        when(usuarioRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(ServiceException.class, () -> usuarioService.excluir(99L));
+    }
 }

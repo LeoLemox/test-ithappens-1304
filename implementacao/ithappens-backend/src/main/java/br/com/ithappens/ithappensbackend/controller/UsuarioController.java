@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Order.asc;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -42,5 +43,11 @@ public class UsuarioController {
         Usuario novoUsuario = usuarioService.salvar(usuario);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novoUsuario.getId()).toUri();
         return created(location).body(novoUsuario);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
+    private void excluirUsuario(@PathVariable Long id) {
+        usuarioService.excluir(id);
     }
 }

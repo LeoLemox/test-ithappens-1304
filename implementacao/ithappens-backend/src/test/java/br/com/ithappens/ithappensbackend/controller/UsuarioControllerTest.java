@@ -1,5 +1,6 @@
 package br.com.ithappens.ithappensbackend.controller;
 
+import br.com.ithappens.ithappensbackend.exception.ServiceException;
 import br.com.ithappens.ithappensbackend.model.Usuario;
 import br.com.ithappens.ithappensbackend.repository.UsuarioRepository;
 import br.com.ithappens.ithappensbackend.service.UsuarioService;
@@ -20,12 +21,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.data.domain.Sort.Order.asc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UsuarioController.class)
@@ -122,7 +122,7 @@ public class UsuarioControllerTest {
     }
 
     @Test
-    void deveValidarAtributosObrigatoriosERetornarStatus400EListaDeErros() throws Exception {
+    void deveValidarAtributosObrigatoriosERetornarStatus400EListaDeErrosParaAtributosInvalidos() throws Exception {
 
         mockMvc.perform(post("/usuario")
                 .characterEncoding("utf-8")
@@ -131,7 +131,50 @@ public class UsuarioControllerTest {
                 .content(mapper.writeValueAsString(new Usuario())))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[*].userMessage", containsInAnyOrder("Nome é obrigatório(a)", "Email é obrigatório(a)", "Senha é obrigatório(a)")));
+    }
+
+    @Test
+    void deveRetornarStatus400EMensagemDeErroAoEncontrarEmailJaCadastrado() throws Exception {
+
+        Usuario novoUsuario = Usuario.builder().nome("leonardo").email("leonardo@ithappens.com").senha("leonardo@123").build();
+
+        when(service.salvar(novoUsuario)).thenThrow(new ServiceException("Email já cadastrado."));
+
+        mockMvc.perform(post("/usuario")
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(novoUsuario)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].userMessage", equalTo("Email já cadastrado.")));
+    }
+
+    @Test
+    void deveRetornarStatus204AoExcluirUsuario() throws Exception {
+
+        mockMvc.perform(delete("/usuario/1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deveRetornarStatus400EMensagemDeErroAoTentarExcluirUsuarioInexistente() throws Exception {
+
+        doThrow(new ServiceException("Usuário inexistente.")).when(service).excluir(99L);
+
+        mockMvc.perform(delete("/usuario/99")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].userMessage", equalTo("Usuário inexistente.")));
+        ;
     }
 }
