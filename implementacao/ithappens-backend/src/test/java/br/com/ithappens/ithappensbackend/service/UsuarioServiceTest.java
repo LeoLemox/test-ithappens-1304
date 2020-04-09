@@ -29,7 +29,8 @@ public class UsuarioServiceTest {
 
     @BeforeEach
     void init() {
-        usuario = Usuario.builder().id(6L).nome("José da Silva").email("jose.silva@ithappens.com").senha("jose@123").build();
+        usuario = Usuario.builder().id(6L).nome("José da Silva").email("jose.silva@ithappens.com").senha("jose@123")
+                .build();
     }
 
     @Test
@@ -52,10 +53,29 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    void aoVerificarUsuarioInexistenteLancarExcecao() {
+    void aoAtualizarUsuarioDeveRetornarUsuarioAtualizado() {
 
-        when(usuarioRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        Usuario usuarioAtualizado = Usuario.builder().id(6L).nome("José Oliveira da Silva")
+                .email("jose.silva@ithappens.com").senha("jose@123").build();
 
-        assertThrows(ServiceException.class, () -> usuarioService.excluir(99L));
+        when(usuarioRepository.findById(any(Long.class))).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
+
+        usuarioService.atualizar(usuarioAtualizado.getId(), usuarioAtualizado);
+
+        assertEquals(usuario.getNome(), usuarioAtualizado.getNome());
+    }
+
+    @Test
+    void aoAtualizarUsuarioDeveRetornarExcecaoAoIdentificarEmailJaExistenteParaOutroUsuario() {
+
+        Usuario usuarioAtualizado = Usuario.builder().id(6L).nome("José Oliveira da Silva")
+                .email("jose.oliveira@ithappens.com").senha("jose@123").build();
+        Usuario usuarioEmail = Usuario.builder().id(7L).nome("José Oliveira Ramos")
+                .email("jose.oliveira@ithappens.com").senha("jose@123").build();
+
+        when(usuarioRepository.findByEmail(any(String.class))).thenReturn(Optional.of(usuarioEmail));
+
+        assertThrows(ServiceException.class, () -> usuarioService.atualizar(usuarioAtualizado.getId(), usuarioAtualizado));
     }
 }

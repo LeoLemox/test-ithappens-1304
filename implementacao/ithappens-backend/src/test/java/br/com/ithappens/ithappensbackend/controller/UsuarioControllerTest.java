@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -164,17 +165,17 @@ public class UsuarioControllerTest {
     }
 
     @Test
-    void deveRetornarStatus400EMensagemDeErroAoTentarExcluirUsuarioInexistente() throws Exception {
+    void deveRetornarStatus404EMensagemDeErroAoTentarExcluirUsuarioInexistente() throws Exception {
 
-        doThrow(new ServiceException("Usuário inexistente.")).when(service).excluir(99L);
+        doThrow(new EmptyResultDataAccessException(1)).when(repository).deleteById(99L);
 
         mockMvc.perform(delete("/usuario/99")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].userMessage", equalTo("Usuário inexistente.")));
+                .andExpect(jsonPath("$[0].userMessage", equalTo("Recurso não encontrado")));
         ;
     }
 }
