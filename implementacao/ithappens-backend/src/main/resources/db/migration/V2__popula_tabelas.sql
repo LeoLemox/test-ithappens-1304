@@ -4,7 +4,7 @@ values (1, 'Leonardo', 'leonardo@ithappens.com', 'leonardo@123'),
        (3, 'Raphael', 'raphael@ithappens.com', 'raphael@123'),
        (4, 'Michelangelo', 'michelangelo@ithappens.com', 'michelangelo@123'),
        (5, 'Splinter', 'splinter@ithappens.com', 'splinter@123');
-alter sequence public.it01_usuario_seq restart with 5;
+alter sequence public.it01_usuario_seq restart with 6;
 
 insert into it02_cliente (it02_cod_cliente, it02_nome, it02_cpf)
 values (1, 'Odin', '315.774.880-75'),
@@ -15,7 +15,7 @@ values (1, 'Odin', '315.774.880-75'),
        (6, 'Mimir', '907.862.960-62'),
        (7, 'Aegir', '504.880.470-80'),
        (8, 'Bader', '739.414.110-12');
-alter sequence public.it02_cliente_seq restart with 8;
+alter sequence public.it02_cliente_seq restart with 9;
 
 insert into it03_filial (it03_cod_filial, it03_nome)
 values (1, 'Filial Bacanga'),
@@ -23,7 +23,7 @@ values (1, 'Filial Bacanga'),
        (3, 'Filial Mix Curva Do 90'),
        (4, 'Filial Mix Jardim Tropical'),
        (5, 'Filial Rio Anil');
-alter sequence public.it03_filial_seq restart with 5;
+alter sequence public.it03_filial_seq restart with 6;
 
 insert into it04_produto (it04_cod_produto, it04_descricao, it04_codigo_barras, it04_valor)
 values (1, 'Pincel Para Pintura Condor Redondo 472 Numero 02', '7891055033326', 4.19),
@@ -76,24 +76,24 @@ values (1, 'Pincel Para Pintura Condor Redondo 472 Numero 02', '7891055033326', 
        (48, 'Sabao em po Tixan Caixa 2kg', '7896098900987', 12.29),
        (49, 'Amaciante de Roupa Downy 500ml', '7506195143834', 6.59),
        (50, 'Amaciante de Roupa Confort Concentrado 500ml', '7891150000971', 4.99);
-alter sequence public.it04_produto_seq restart with 50;
+alter sequence public.it04_produto_seq restart with 51;
 
 insert into it05_forma_pagamento (it05_cod_forma_pagamento, it05_descricao)
 values (1, 'A VISTA'),
        (2, 'BOLETO'),
        (3, 'CARTAO');
-alter sequence public.it05_forma_pagamento_seq restart with 3;
+alter sequence public.it05_forma_pagamento_seq restart with 4;
 
 insert into it06_tipo_pedido (it06_cod_tipo_pedido, it06_descricao)
 values (1, 'ENTRADA'),
        (2, 'SAIDA');
-alter sequence public.it06_tipo_pedido_seq restart with 17;
+alter sequence public.it06_tipo_pedido_seq restart with 3;
 
 insert into it07_status_item (it07_cod_status_item, it07_descricao)
 values (1, 'ATIVO'),
        (2, 'CANCELADO'),
        (3, 'PROCESSADO');
-alter sequence public.it07_status_item_seq restart with 17;
+alter sequence public.it07_status_item_seq restart with 4;
 
 insert into it08_estoque (it08_cod_estoque, it08_quantidade, fkit08it03_cod_filial, fkit08it04_cod_produto)
 values (1, 50, 1, 1),
@@ -346,4 +346,4 @@ values (1, 50, 1, 1),
        (248, 50, 5, 48),
        (249, 50, 5, 49),
        (250, 50, 5, 50);
-alter sequence public.it08_estoque_seq restart with 250;
+alter sequence public.it08_estoque_seq restart with 251;
