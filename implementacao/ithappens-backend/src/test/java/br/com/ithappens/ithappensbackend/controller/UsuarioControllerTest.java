@@ -176,6 +176,24 @@ public class UsuarioControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].userMessage", equalTo("Recurso não encontrado")));
-        ;
+    }
+
+    @Test
+    void deveRetornarStatus404EMensagemDeErroAoTentarAtualizarUsuarioInexistente() throws Exception {
+
+        Usuario atualizado = Usuario.builder().id(99L).build();
+
+        when(service.atualizar(99L, atualizado)).thenThrow(new EmptyResultDataAccessException(1));
+
+        mockMvc.perform(put("/usuario/99")
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(atualizado)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].userMessage", equalTo("Recurso não encontrado")));
     }
 }

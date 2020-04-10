@@ -38,14 +38,19 @@ public class UsuarioController {
     }
 
     @PostMapping
-    private ResponseEntity<Usuario> novoUsuario(@Valid @RequestBody Usuario usuario) {
+    private ResponseEntity<Usuario> novo(@Valid @RequestBody Usuario usuario) {
         Usuario novoUsuario = usuarioService.salvar(usuario);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novoUsuario.getId()).toUri();
         return created(location).body(novoUsuario);
     }
 
+    @PutMapping("/{id}")
+    private ResponseEntity atualizar(@PathVariable Long id, Usuario usuario) {
+        return ok(usuarioService.atualizar(id, usuario));
+    }
+
     @DeleteMapping("/{id}")
-    private ResponseEntity excluirUsuario(@PathVariable Long id) {
+    private ResponseEntity excluir(@PathVariable Long id) {
         usuarioRepository.deleteById(id);
         return noContent().build();
     }

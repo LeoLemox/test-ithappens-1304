@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class UsuarioService {
     @Transactional
     public Usuario atualizar(Long id, Usuario usuario) {
 
-        verificarEmail(id, usuario.getEmail());
+        if (!StringUtils.isEmpty(usuario.getEmail())) verificarEmail(id, usuario.getEmail());
         return usuarioRepository.findById(id)
                 .map(usuarioSalvo -> {
                     BeanUtils.copyProperties(usuario, usuarioSalvo, "id");
