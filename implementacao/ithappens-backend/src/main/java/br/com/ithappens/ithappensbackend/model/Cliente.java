@@ -1,11 +1,18 @@
 package br.com.ithappens.ithappensbackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "it02_cliente")
 @SequenceGenerator(
@@ -25,9 +32,11 @@ public class Cliente implements Serializable {
     @Column(name = "it02_cod_cliente")
     private Long id;
 
+    @NotBlank
     @Column(name = "it02_nome")
     private String nome;
 
+    @NotBlank
     @Column(name = "it02_cpf")
     private String cpf;
 }
