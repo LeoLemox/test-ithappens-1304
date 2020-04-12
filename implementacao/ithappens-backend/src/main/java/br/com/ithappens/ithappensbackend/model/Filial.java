@@ -1,11 +1,18 @@
 package br.com.ithappens.ithappensbackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "it03_filial")
 @SequenceGenerator(
@@ -25,6 +32,7 @@ public class Filial implements Serializable {
     @Column(name = "it03_cod_filial")
     private Long id;
 
+    @NotBlank
     @Column(name = "it03_nome")
     private String nome;
 }

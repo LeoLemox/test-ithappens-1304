@@ -82,7 +82,7 @@ public class ClienteControllerTest {
     }
 
     @Test
-    void deveRetornarStatus204() throws Exception {
+    void deveRetornarStatus204CasoNaoExistamClientesCadastrados() throws Exception {
 
         when(repository.findAll(Sort.by(asc("nome")))).thenReturn(Collections.emptyList());
 

@@ -1,9 +1,9 @@
 package br.com.ithappens.ithappensbackend.controller;
 
 import br.com.ithappens.ithappensbackend.exception.ServiceException;
-import br.com.ithappens.ithappensbackend.model.Usuario;
-import br.com.ithappens.ithappensbackend.repository.UsuarioRepository;
-import br.com.ithappens.ithappensbackend.service.UsuarioService;
+import br.com.ithappens.ithappensbackend.model.Filial;
+import br.com.ithappens.ithappensbackend.repository.FilialRepository;
+import br.com.ithappens.ithappensbackend.service.FilialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,147 +29,150 @@ import static org.springframework.data.domain.Sort.Order.asc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UsuarioController.class)
-public class UsuarioControllerTest {
+@WebMvcTest(FilialController.class)
+public class FilialControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private UsuarioRepository repository;
+    private FilialRepository repository;
 
     @MockBean
-    private UsuarioService service;
+    private FilialService service;
 
     private ObjectMapper mapper;
 
-    private Usuario usuario;
-    private List<Usuario> usuarios;
+    private Filial filial;
+    private List<Filial> filiais;
 
     @BeforeEach
     void init() {
 
         mapper = new ObjectMapper();
-        usuario = Usuario.builder().id(1L).nome("Leonardo").email("leonardo@ithappens.com").senha("leonardo@123").build();
-        usuarios = asList(
-                usuario,
-                Usuario.builder().id(2L).nome("Donatello").email("donatello@ithappens.com").senha("donatello@123").build(),
-                Usuario.builder().id(3L).nome("Raphael").email("raphael@ithappens.com").senha("raphael@123").build(),
-                Usuario.builder().id(4L).nome("Michelangelo").email("michelangelo@ithappens.com").senha("michelangelo@123").build(),
-                Usuario.builder().id(5L).nome("Splinter").email("splinter@ithappens.com").senha("splinter@123").build());
+        filial = Filial.builder().id(1L).nome("Filial Bacanga").build();
+        filiais = asList(
+                filial,
+                Filial.builder().id(2L).nome("Filial Calhau").build(),
+                Filial.builder().id(3L).nome("Filial Mix Curva Do 90").build(),
+                Filial.builder().id(4L).nome("Filial Mix Jardim Tropical").build(),
+                Filial.builder().id(5L).nome("Filial Rio Anil").build());
     }
 
     @Test
-    void deveRetornarStatus200EListagemDeUsuarios() throws Exception {
+    void deveRetornarStatus200EListagemDeFiliais() throws Exception {
 
         when(repository.findAll(Sort.by(asc("nome")))).thenReturn(
-                usuarios.stream()
-                        .sorted(Comparator.comparing(Usuario::getNome))
+                filiais.stream()
+                        .sorted(Comparator.comparing(Filial::getNome))
                         .collect(Collectors.toList())
         );
 
-        mockMvc.perform(get("/usuario")
+        mockMvc.perform(get("/filial")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(5)));
     }
 
     @Test
-    void deveRetornarStatus204CasoNaoExistamUsuariosCadastrados() throws Exception {
+    void deveRetornarStatus204CasoNaoExistamFiliaisCadastradas() throws Exception {
 
         when(repository.findAll(Sort.by(asc("nome")))).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/usuario")
+        mockMvc.perform(get("/filial")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void deveRetornarStatus200EUsuarioComIdCorrespondente() throws Exception {
+    void deveRetornarStatus200EFilialComIdCorrespondente() throws Exception {
 
-        when(repository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(repository.findById(1L)).thenReturn(Optional.of(filial));
 
-        mockMvc.perform(get("/usuario/1")
+        mockMvc.perform(get("/filial/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(usuario)));
+                .andExpect(content().json(mapper.writeValueAsString(filial)));
     }
 
     @Test
-    void deveRetornarStatus204AoNaoEncontrarOUsuarioComIdCorrespondente() throws Exception {
+    void deveRetornarStatus204AoNaoEncontrarAFilialComIdCorrespondente() throws Exception {
 
-        when(repository.findById(7L)).thenReturn(Optional.empty());
+        when(repository.findById(9L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/usuario/7")
+        mockMvc.perform(get("/filial/6")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void deveRetornarStatus201EUsuarioCriado() throws Exception {
+    void deveRetornarStatus201EFilialCriada() throws Exception {
 
-        Usuario novoUsuario = Usuario.builder().nome("José").email("jose@ithappens.com").senha("jose@123").build();
-        Usuario usuarioSalvo = Usuario.builder().id(6L).nome("José").email("jose@ithappens.com").senha("jose@123").build();
+        Filial novaFilial = Filial.builder().nome("Cajazeiras").build();
+        Filial filialSalva = Filial.builder().id(6L).nome("Cajazeiras").build();
 
-        when(service.salvar(novoUsuario)).thenReturn(usuarioSalvo);
+        when(service.salvar(novaFilial)).thenReturn(filialSalva);
 
-        mockMvc.perform(post("/usuario")
+        mockMvc.perform(post("/filial")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(novoUsuario)))
+                .content(mapper.writeValueAsString(novaFilial)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("Location", "http://localhost/usuario/6"));
+                .andExpect(header().string("Location", "http://localhost/filial/6"));
     }
 
     @Test
     void deveValidarAtributosObrigatoriosERetornarStatus400EListaDeErrosParaAtributosInvalidos() throws Exception {
 
-        mockMvc.perform(post("/usuario")
+        mockMvc.perform(post("/filial")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Usuario())))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[*].userMessage", containsInAnyOrder("Nome é obrigatório(a)", "Email é obrigatório(a)", "Senha é obrigatório(a)")));
-    }
-
-    @Test
-    void deveRetornarStatus400EMensagemDeErroAoEncontrarEmailJaCadastrado() throws Exception {
-
-        Usuario novoUsuario = Usuario.builder().nome("leonardo").email("leonardo@ithappens.com").senha("leonardo@123").build();
-
-        when(service.salvar(novoUsuario)).thenThrow(new ServiceException("Email já cadastrado."));
-
-        mockMvc.perform(post("/usuario")
-                .characterEncoding("utf-8")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(novoUsuario)))
+                .content(mapper.writeValueAsString(new Filial())))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].userMessage", equalTo("Email já cadastrado.")));
+                .andExpect(jsonPath("$[*].userMessage", containsInAnyOrder("Nome é obrigatório(a)")));
     }
 
     @Test
-    void deveRetornarStatus204AoExcluirUsuario() throws Exception {
+    void deveRetornarStatus400EMensagemDeErroAoEncontrarNomeJaCadastrado() throws Exception {
 
-        mockMvc.perform(delete("/usuario/1")
+        Filial novaFilial = Filial.builder().nome("Filial Bacanga").build();
+
+        when(service.salvar(novaFilial)).thenThrow(new ServiceException("Nome já cadastrado."));
+
+        mockMvc.perform(post("/filial")
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(novaFilial)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].userMessage", equalTo("Nome já cadastrado.")));
+    }
+
+    @Test
+    void deveRetornarStatus204AoExcluirFilial() throws Exception {
+
+        mockMvc.perform(delete("/filial/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void deveRetornarStatus404EMensagemDeErroAoTentarExcluirUsuarioInexistente() throws Exception {
+    void deveRetornarStatus404EMensagemDeErroAoTentarExcluirFilialInexistente() throws Exception {
 
         doThrow(new EmptyResultDataAccessException(1)).when(repository).deleteById(99L);
 
-        mockMvc.perform(delete("/usuario/99")
+        mockMvc.perform(delete("/filial/99")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -179,17 +182,17 @@ public class UsuarioControllerTest {
     }
 
     @Test
-    void deveRetornarStatus404EMensagemDeErroAoTentarAtualizarUsuarioInexistente() throws Exception {
+    void deveRetornarStatus404EMensagemDeErroAoTentarAtualizarFilialInexistente() throws Exception {
 
-        Usuario atualizado = Usuario.builder().id(99L).build();
+        Filial filialAtualizada = Filial.builder().id(99L).build();
 
-        when(service.atualizar(99L, atualizado)).thenThrow(new EmptyResultDataAccessException(1));
+        when(service.atualizar(99L, filialAtualizada)).thenThrow(new EmptyResultDataAccessException(1));
 
-        mockMvc.perform(put("/usuario/99")
+        mockMvc.perform(put("/filial/99")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(atualizado)))
+                .content(mapper.writeValueAsString(filialAtualizada)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
