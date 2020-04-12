@@ -1,11 +1,18 @@
 package br.com.ithappens.ithappensbackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "it05_forma_pagamento")
 @SequenceGenerator(
@@ -25,6 +32,7 @@ public class FormaPagamento implements Serializable {
     @Column(name = "it05_cod_forma_pagamento")
     private Long id;
 
+    @NotBlank
     @Column(name = "it05_descricao")
     private String descricao;
 }
