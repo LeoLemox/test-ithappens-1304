@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import static br.com.ithappens.ithappensbackend.util.CommonUtil.copyValues;
 
@@ -22,7 +23,8 @@ public class ProdutoService {
     @Transactional
     public Produto atualizar(Long id, Produto produto) {
 
-        verificarCodigoBarras(id, produto.getCodigoBarras());
+        if (!StringUtils.isEmpty(produto.getCodigoBarras())) verificarCodigoBarras(id, produto.getCodigoBarras());
+
         return produtoRepository.findById(id)
                 .map(produtoSalvo -> {
                     copyValues(produto, produtoSalvo, "id");
