@@ -31,7 +31,7 @@ public class FormaPagamentoService {
     @Transactional
     public FormaPagamento salvar(FormaPagamento formaPagamento) {
 
-        this.verificarDescricao(formaPagamento.getDescricao());
+        verificarDescricao(formaPagamento.getDescricao());
         return formaPagamentoRepository.save(formaPagamento);
     }
 

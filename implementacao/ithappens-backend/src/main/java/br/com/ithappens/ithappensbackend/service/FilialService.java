@@ -31,7 +31,7 @@ public class FilialService {
     @Transactional
     public Filial salvar(Filial filial) {
 
-        this.verificarNome(filial.getNome());
+        verificarNome(filial.getNome());
         return filialRepository.save(filial);
     }
 

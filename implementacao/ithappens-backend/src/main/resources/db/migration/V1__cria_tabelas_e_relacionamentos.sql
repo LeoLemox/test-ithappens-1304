@@ -112,10 +112,13 @@ create table if not exists public.it10_item_pedido
     it10_valor_unitario        numeric         default 0.0,
     fkit10it04_cod_produto     bigint not null,
     fkit10it07_cod_status_item bigint not null,
+    fkit10it09_cod_pedido      bigint not null,
 
     constraint pkit10_cod_item_pedido primary key (it10_cod_item_pedido),
     constraint fkit10it04_cod_produto foreign key (fkit10it04_cod_produto)
         references it04_produto (it04_cod_produto),
     constraint fkit10it07_cod_status_item foreign key (fkit10it07_cod_status_item)
-        references it07_status_item (it07_cod_status_item)
+        references it07_status_item (it07_cod_status_item),
+    constraint fkit10it09_cod_pedido foreign key (fkit10it09_cod_pedido)
+        references it09_pedido (it09_cod_pedido)
 );
