@@ -1,12 +1,19 @@
 package br.com.ithappens.ithappensbackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "it10_item_pedido")
 @SequenceGenerator(
@@ -29,8 +36,13 @@ public class ItemPedido implements Serializable {
     @Column(name = "it10_valor_unitario")
     private BigDecimal valorUnitario;
 
+    @Min(value = 1, message = "A quantidade deve ser maior que zero")
     @Column(name = "it10_quantidade")
     private Integer quantidade;
+
+    @ManyToOne
+    @JoinColumn(name = "fkit10it09_cod_pedido")
+    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "fkit10it04_cod_produto")

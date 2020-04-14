@@ -1,11 +1,17 @@
 package br.com.ithappens.ithappensbackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "it07_status_item")
 @SequenceGenerator(
@@ -16,6 +22,9 @@ import java.io.Serializable;
 public class StatusItem implements Serializable {
 
     private static final long serialVersionUID = -4992101709763981935L;
+    public static long ATIVO = 1L;
+    public static long CANCELADO = 2L;
+    public static long PROCESSADO = 3L;
 
     @Id
     @GeneratedValue(
