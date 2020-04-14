@@ -52,6 +52,7 @@ public class ItemPedidoController {
 
     @PutMapping("/cancelar/{id}")
     public ResponseEntity<ItemPedido> cancelar(@PathVariable Long id) {
-        return ok().body(itemPedidoService.cancelar(id));
+        itemPedidoService.cancelar(id);
+        return ok().build();
     }
 }
