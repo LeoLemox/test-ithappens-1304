@@ -25,32 +25,32 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    private ResponseEntity<List<Usuario>> buscarTodos() {
+    public ResponseEntity<List<Usuario>> buscarTodos() {
         List<Usuario> usuarios = usuarioRepository.findAll(Sort.by(asc("nome")));
         return usuarios.isEmpty() ? noContent().build() : ok(usuarios);
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
         return usuarioRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(noContent().build());
     }
 
     @PostMapping
-    private ResponseEntity<Usuario> novo(@Valid @RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> novo(@Valid @RequestBody Usuario usuario) {
         Usuario novoUsuario = usuarioService.salvar(usuario);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novoUsuario.getId()).toUri();
         return created(location).body(novoUsuario);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity atualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
         return ok(usuarioService.atualizar(id, usuario));
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@PathVariable Long id) {
         usuarioRepository.deleteById(id);
         return noContent().build();
     }

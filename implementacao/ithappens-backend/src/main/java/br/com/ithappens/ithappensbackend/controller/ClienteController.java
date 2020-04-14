@@ -25,32 +25,32 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
-    private ResponseEntity<List<Cliente>> buscarTodos() {
+    public ResponseEntity<List<Cliente>> buscarTodos() {
         List<Cliente> clientes = clienteRepository.findAll(Sort.by(asc("nome")));
         return clientes.isEmpty() ? noContent().build() : ok(clientes);
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
         return clienteRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(noContent().build());
     }
 
     @PostMapping
-    private ResponseEntity<Cliente> novo(@Valid @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> novo(@Valid @RequestBody Cliente cliente) {
         Cliente novoCliente = clienteService.salvar(cliente);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novoCliente.getId()).toUri();
         return created(location).body(novoCliente);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
         return ok(clienteService.atualizar(id, cliente));
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@PathVariable Long id) {
         clienteRepository.deleteById(id);
         return noContent().build();
     }

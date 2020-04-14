@@ -25,32 +25,32 @@ public class FormaPagamentoController {
     private FormaPagamentoService formaPagamentoService;
 
     @GetMapping
-    private ResponseEntity<List<FormaPagamento>> buscarTodos() {
+    public ResponseEntity<List<FormaPagamento>> buscarTodos() {
         List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll(Sort.by(asc("descricao")));
         return formasPagamento.isEmpty() ? noContent().build() : ok(formasPagamento);
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<FormaPagamento> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<FormaPagamento> buscarPorId(@PathVariable Long id) {
         return formaPagamentoRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(noContent().build());
     }
 
     @PostMapping
-    private ResponseEntity<FormaPagamento> novo(@Valid @RequestBody FormaPagamento formaPagamento) {
+    public ResponseEntity<FormaPagamento> novo(@Valid @RequestBody FormaPagamento formaPagamento) {
         FormaPagamento novaFormaPagamento = formaPagamentoService.salvar(formaPagamento);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novaFormaPagamento.getId()).toUri();
         return created(location).body(novaFormaPagamento);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity atualizar(@PathVariable Long id, @RequestBody FormaPagamento formaPagamento) {
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody FormaPagamento formaPagamento) {
         return ok(formaPagamentoService.atualizar(id, formaPagamento));
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@PathVariable Long id) {
         formaPagamentoRepository.deleteById(id);
         return noContent().build();
     }

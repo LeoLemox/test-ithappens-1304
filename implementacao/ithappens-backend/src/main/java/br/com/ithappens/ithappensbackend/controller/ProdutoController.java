@@ -26,13 +26,13 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @GetMapping
-    private ResponseEntity<List<Produto>> buscarTodos() {
+    public ResponseEntity<List<Produto>> buscarTodos() {
         List<Produto> produtos = produtoRepository.findAll(Sort.by(asc("descricao")));
         return produtos.isEmpty() ? noContent().build() : ok(produtos);
     }
 
     @GetMapping("/buscaAvancada")
-    private ResponseEntity<Page<Produto>> buscaAvancada(@RequestParam(required = false) Long sequencial,
+    public ResponseEntity<Page<Produto>> buscaAvancada(@RequestParam(required = false) Long sequencial,
                                                         @RequestParam(required = false) String descricao,
                                                         @RequestParam(required = false) String codigoDeBarras,
                                                         @RequestParam(required = false, defaultValue = "0") int page,
@@ -42,19 +42,19 @@ public class ProdutoController {
     }
 
     @PostMapping
-    private ResponseEntity<Produto> novo(@Valid @RequestBody Produto produto) {
+    public ResponseEntity<Produto> novo(@Valid @RequestBody Produto produto) {
         Produto novoProduto = produtoService.salvar(produto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(novoProduto.getId()).toUri();
         return created(location).body(novoProduto);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity atualizar(@PathVariable Long id, @RequestBody Produto produto) {
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody Produto produto) {
         return ok(produtoService.atualizar(id, produto));
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@PathVariable Long id) {
         produtoRepository.deleteById(id);
         return noContent().build();
     }

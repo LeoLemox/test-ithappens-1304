@@ -85,11 +85,12 @@ create sequence public.it09_pedido_seq start 1 increment 1;
 create table if not exists public.it09_pedido
 (
     it09_cod_pedido                bigint not null default nextval('public.it09_pedido_seq'::regclass),
+    it09_observacao                text,
     fkit09it01_cod_usuario         bigint not null,
     fkit09it02_cod_cliente         bigint,
     fkit09it03_cod_filial          bigint not null,
     fkit09it05_cod_forma_pagamento bigint,
-    fkit09it06_cod_tipo_pedido     bigint,
+    fkit09it06_cod_tipo_pedido     bigint not null,
 
     constraint pkit09_cod_pedido primary key (it09_cod_pedido),
     constraint fkit09it01_cod_usuario foreign key (fkit09it01_cod_usuario)

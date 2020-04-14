@@ -1,11 +1,17 @@
 package br.com.ithappens.ithappensbackend.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "it09_pedido")
 @SequenceGenerator(
@@ -24,6 +30,9 @@ public class Pedido implements Serializable {
     )
     @Column(name = "it09_cod_pedido")
     private Long id;
+
+    @Column(name = "it09_observacao")
+    private String observacao;
 
     @ManyToOne
     @JoinColumn(name = "fkit09it02_cod_cliente")
