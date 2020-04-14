@@ -55,7 +55,7 @@ public class ItemPedidoService {
                                 itemPedido.setValorUnitario(estoque.getProduto().getValor());
                                 return itemPedido;
                             })
-                            .orElseThrow(() -> new ServiceException("Estoque indisponível"));
+                            .orElseThrow(() -> new ServiceException("Estoque inexistente"));
                 })
                 .orElseThrow(() -> new ServiceException("Pedido inexistente"));
     }

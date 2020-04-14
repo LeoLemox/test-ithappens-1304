@@ -64,6 +64,12 @@ public class PedidoController {
         return salvarPedido(pedido, request);
     }
 
+    @PostMapping(value = {"/finalizar/{id}", "/finalizar/{id}/formaPagamento/{fpId}"})
+    public ResponseEntity finalizar(@PathVariable Long id, @PathVariable(required = false) Long fpId) {
+        pedidoService.finalizarPedido(id, fpId);
+        return ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity excluir(@PathVariable Long id) {
         pedidoRepository.deleteById(id);

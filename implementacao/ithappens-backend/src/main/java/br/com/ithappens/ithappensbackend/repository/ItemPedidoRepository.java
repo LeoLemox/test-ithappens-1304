@@ -15,6 +15,13 @@ public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long> {
             "where p.id = :pedidoId")
     List<ItemPedido> findByPedido(Long pedidoId);
 
+    @Query("select ip from ItemPedido ip " +
+            "join ip.pedido p " +
+            "join ip.statusItem s " +
+            "where p.id = :pedidoId " +
+            "and s.id = 1")
+    List<ItemPedido> findAtivosByPedido(Long pedidoId);
+
     @Query("select new br.com.ithappens.ithappensbackend.model.dto.ItemPedidoDto" +
             "(ip.id, pe.id, pr.descricao, s.descricao, pr.valor, ip.quantidade, (ip.quantidade * ip.valorUnitario)) " +
             "from ItemPedido ip " +
